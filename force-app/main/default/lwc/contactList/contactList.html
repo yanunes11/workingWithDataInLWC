@@ -4,12 +4,12 @@
             <template if:true={errors}>
                 <p>{errors}</p>
             </template>
-            <lightning-datatable
+                <lightning-datatable
                 key-field="Id"
                 data={contacts.data}
                 columns={columns}
             >
-           </lightning-datatable>
+            </lightning-datatable>
         </template>
     </lightning-card>
-</template>
+    </template>
