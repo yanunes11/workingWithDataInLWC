@@ -1,19 +1,30 @@
 import { LightningElement, wire } from 'lwc';
-import { reduceErrors } from 'c/ldsUtils';
-import FIRSTNAME_FIELD from '@salesforce/schema/Contact.FirstName';
-import LASTNAME_FIELD from '@salesforce/schema/Contact.LastName';
-import EMAIL_FIELD from '@salesforce/schema/Contact.Email';
+import CONTACT_FIRSTNAME from '@salesforce/schema/Contact.FirstName';
+import CONTACT_LASTNAME from '@salesforce/schema/Contact.LastName';
+import CONTACT_EMAIL from '@salesforce/schema/Contact.Email';
 import getContacts from '@salesforce/apex/ContactController.getContacts';
+import { reduceErrors } from 'c/ldsUtils';
 const COLUMNS = [
-    { label: 'First Name', fieldName: FIRSTNAME_FIELD.fieldApiName, type: 'text' },
-    { label: 'Last Name', fieldName: LASTNAME_FIELD.fieldApiName, type: 'text' },
-    { label: 'Email', fieldName: EMAIL_FIELD.fieldApiName, type: 'email' }
-];
+        { label: 'First Name',fieldName: CONTACT_FIRSTNAME.fieldApiName, type: 'text' },
+        { label: 'Last Name', fieldName: CONTACT_LASTNAME.fieldApiName, type: 'text' },
+        { label: 'Email', fieldName: CONTACT_EMAIL.fieldApiName, type: 'email' }
+    ];  
 export default class ContactList extends LightningElement {
+    columns = COLUMNS;
     @wire(getContacts)
-    Contacts;
+    contacts;
+    error;
+    wiredContacts({ error, data }) {
+        if (data) {
+        this.contacts = data;
+        this.error = undefined;
+        } else if (error) {
+        this.error = error;
+        this.contacts = undefined;
+        }
+    }
     get errors() {
-        return (this.Contacts.error) ?
-            reduceErrors(this.Contacts.error) : [];
+        return (this.contacts.error) ?
+        reduceErrors(this.contacts.error) : [];
     }
 }
